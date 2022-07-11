@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 871920D1991BC93C && apt-get update \
+RUN apt-get update \
   && apt-get install -y --no-install-recommends \
   python3-pip python3-dev \
   && cd /usr/local/bin \
