@@ -1,4 +1,10 @@
-FROM python:3.8-slim
+FROM ubuntu:22.04
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+  python3-pip python3-dev \
+  && cd /usr/local/bin \
+  && ln -s /usr/bin/python3 python
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
