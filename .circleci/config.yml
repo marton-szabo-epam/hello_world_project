@@ -22,11 +22,18 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
-          name: Build and push Docker image
+          name: Build Docker image
           command: |
             export TAG=0.1.$CIRCLE_BUILD_NUM
             echo $ACCESS_TOKEN | docker login --username mszabo2 --password-stdin
-            docker build -t $IMAGE_REPO/$IMAGE_NAME:$TAG .
+            docker build -t $IMAGE_NAME:$TAG .
+      - trivy/vulnerability-scan:
+          docker-image: $IMAGE_NAME:$TAG
+      - run:
+          name: Push Docker image
+          command: |
+            echo $ACCESS_TOKEN | docker login --username mszabo2 --password-stdin
+            docker tag $IMAGE_NAME:$TAG $IMAGE_REPO/$IMAGE_NAME:$TAG .
             docker push $IMAGE_REPO/$IMAGE_NAME:$TAG
             
 workflows: # a single workflow with a single job called build
@@ -34,3 +41,6 @@ workflows: # a single workflow with a single job called build
     jobs:
       - build:
           context: docker
+          
+orbs: 
+  trivy: signavio/trivy@1.3.0
