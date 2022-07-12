@@ -6,6 +6,7 @@ jobs:
         environment:
            IMAGE_NAME: django-hello-world
            IMAGE_REPO: mszabo2
+    resource_class: medium
     steps:
       - checkout
       - run:
@@ -14,11 +15,14 @@ jobs:
             python3 -m venv myenv
             source myenv/bin/activate
             pip install --no-cache-dir -r requirements.txt
+            pip install --no-cache-dir unittest-xml-reporting
       - run:
           name: Run Tests
           command: |
             source myenv/bin/activate
             python3 manage.py test
+      - store_test_results:
+          path: testresults
       - setup_remote_docker:
           docker_layer_caching: true
           version: 20.10.14
@@ -35,7 +39,7 @@ jobs:
           command: |
             export TAG=0.1.$CIRCLE_BUILD_NUM
             echo $ACCESS_TOKEN | docker login --username mszabo2 --password-stdin
-            docker tag $IMAGE_NAME:$TAG $IMAGE_REPO/$IMAGE_NAME:$TAG .
+            docker tag $IMAGE_NAME:$TAG $IMAGE_REPO/$IMAGE_NAME:$TAG
             docker push $IMAGE_REPO/$IMAGE_NAME:$TAG
             
 workflows: # a single workflow with a single job called build
