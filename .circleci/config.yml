@@ -35,7 +35,7 @@ jobs:
           command: |
             export TAG=0.1.$CIRCLE_BUILD_NUM
             echo $ACCESS_TOKEN | docker login --username mszabo2 --password-stdin
-            docker tag $IMAGE_NAME:$TAG $IMAGE_REPO/$IMAGE_NAME:$TAG .
+            docker tag $IMAGE_NAME:$TAG $IMAGE_REPO/$IMAGE_NAME:$TAG
             docker push $IMAGE_REPO/$IMAGE_NAME:$TAG
             
 workflows: # a single workflow with a single job called build
